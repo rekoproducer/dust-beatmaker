@@ -80,7 +80,7 @@ export class AtmosphericEngine {
     if (this.texturePlayer) return
     try {
       this.texturePlayer = new Tone.Player({
-        url: '/audio/textures/vinyl_crackle.wav',
+        url: `${import.meta.env.BASE_URL ?? '/'}audio/textures/vinyl_crackle.wav`,
         loop: true,
       }).connect(this.textureVol)
       await Tone.loaded()

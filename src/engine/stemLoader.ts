@@ -34,9 +34,13 @@ export async function discoverBankFiles(folder: string): Promise<string[]> {
     console.warn('[stemLoader] dev API unreachable, trying manifest fallback', err)
   }
 
-  // 2. Fall back to pre-generated manifest.json (production / static hosting)
+  // 2. Fall back to pre-generated manifest.json (production / GitHub Pages)
+  // import.meta.env.BASE_URL = '/dust-beatmaker/' in prod, '/' in dev
+  const base = import.meta.env.BASE_URL ?? '/'
   try {
-    const res = await fetch(`/audio/stems/${encodedFolder}/manifest.json`, { cache: 'no-store' })
+    const manifestUrl = `${base}audio/stems/${encodedFolder}/manifest.json`
+    console.log(`[stemLoader] trying manifest: ${manifestUrl}`)
+    const res = await fetch(manifestUrl, { cache: 'no-store' })
     if (res.ok) {
       const files: string[] = await res.json()
       console.log(`[stemLoader] manifest fallback: ${files.length} file(s)`, files)
@@ -44,7 +48,7 @@ export async function discoverBankFiles(folder: string): Promise<string[]> {
     }
   } catch { /* no manifest */ }
 
-  console.warn(`[stemLoader] no files found for folder "${folder}" — check /api/stems/${folder}`)
+  console.warn(`[stemLoader] no files found for "${folder}" — BASE_URL: ${import.meta.env.BASE_URL}`)
   return []
 }
 
@@ -72,7 +76,7 @@ export function loadDynamicSamplers(
 
       samplers[trackId] = new Tone.Sampler({
         urls: { C4: encodedFile },
-        baseUrl: `/audio/stems/${folder}/`,
+        baseUrl: `${import.meta.env.BASE_URL ?? '/'}audio/stems/${folder}/`,
         onload: () => {
           loaded++
           console.log(`[stemLoader] loaded ${trackId} (${loaded}/${files.length})`)
