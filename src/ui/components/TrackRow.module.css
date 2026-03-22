@@ -1,0 +1,114 @@
+.row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 5px 0;
+  border-bottom: 1px solid var(--border);
+  transition: opacity 0.2s ease;
+  animation: slide-in 0.3s ease both;
+}
+
+.row:last-child { border-bottom: none; }
+
+.row.muted { opacity: 0.3; }
+
+/* ── Meta ─────────────────────────────────────────────────────────────────── */
+.meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 160px;
+  flex-shrink: 0;
+}
+
+.label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--text-dim);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  width: 72px;
+  padding: 4px 0;
+  transition: color 0.15s;
+  text-transform: uppercase;
+}
+
+.label:hover { color: var(--gold); }
+
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.muteBtn {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  font-weight: 700;
+  width: 22px;
+  height: 22px;
+  border-radius: 3px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.muteBtn:hover {
+  border-color: var(--amber);
+  color: var(--amber);
+}
+
+.muteBtn.mutedActive {
+  background: var(--amber-dim);
+  border-color: var(--amber);
+  color: var(--amber);
+}
+
+.volSlider {
+  -webkit-appearance: none;
+  width: 48px;
+  height: 2px;
+  background: var(--border);
+  border-radius: 1px;
+  outline: none;
+  cursor: pointer;
+}
+
+.volSlider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--text-dim);
+  cursor: pointer;
+  transition: background 0.1s, transform 0.1s;
+}
+
+.volSlider::-webkit-slider-thumb:hover {
+  background: var(--gold);
+  transform: scale(1.4);
+}
+
+.count {
+  font-size: 9px;
+  color: var(--text-muted);
+  width: 28px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Steps ────────────────────────────────────────────────────────────────── */
+.steps {
+  display: flex;
+  gap: 3px;
+  flex: 1;
+}

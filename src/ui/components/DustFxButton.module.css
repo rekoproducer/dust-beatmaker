@@ -1,0 +1,60 @@
+.btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--bg-glass);
+  color: var(--text-dim);
+  cursor: pointer;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  position: relative;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.btn:hover {
+  border-color: rgba(197, 160, 89, 0.5);
+  color: var(--text);
+  background: var(--gold-dim);
+}
+
+.btn.active {
+  border-color: var(--gold);
+  color: var(--gold);
+  background: rgba(197, 160, 89, 0.1);
+  box-shadow:
+    0 0 12px rgba(197, 160, 89, 0.25),
+    inset 0 0 16px rgba(197, 160, 89, 0.06);
+  animation: fx-pulse 2.5s ease-in-out infinite;
+}
+
+@keyframes fx-pulse {
+  0%, 100% { box-shadow: 0 0 12px rgba(197, 160, 89, 0.25), inset 0 0 16px rgba(197, 160, 89, 0.06); }
+  50%       { box-shadow: 0 0 22px rgba(197, 160, 89, 0.45), inset 0 0 24px rgba(197, 160, 89, 0.1); }
+}
+
+.icon {
+  font-size: 14px;
+  line-height: 1;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.btn.active .icon { opacity: 1; }
+
+.activeDot {
+  position: absolute;
+  top: 6px;
+  right: 8px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--gold);
+  box-shadow: 0 0 6px var(--gold);
+  animation: blink-cursor 1.5s ease-in-out infinite;
+}

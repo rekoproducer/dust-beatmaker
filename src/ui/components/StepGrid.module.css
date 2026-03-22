@@ -1,0 +1,93 @@
+.root {
+  display: flex;
+  flex-direction: column;
+}
+
+.emptyState {
+  padding: 24px 0;
+  text-align: center;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  color: var(--text-muted);
+}
+
+/* Horizontal scroll for dense grids (32n / 64n) */
+.scrollWrap {
+  overflow-x: auto;
+  overflow-y: visible;
+  padding-bottom: 4px;
+  /* Custom scrollbar in DUST theme */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(197, 160, 89, 0.25) transparent;
+}
+
+.scrollWrap::-webkit-scrollbar {
+  height: 4px;
+}
+.scrollWrap::-webkit-scrollbar-track {
+  background: transparent;
+}
+.scrollWrap::-webkit-scrollbar-thumb {
+  background: rgba(197, 160, 89, 0.25);
+  border-radius: 2px;
+}
+
+/* ── Ruler ────────────────────────────────────────────────────────────────── */
+.ruler {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 2px;
+  min-width: max-content;
+}
+
+.rulerOffset {
+  width: 160px;
+  flex-shrink: 0;
+}
+
+.rulerSteps {
+  display: flex;
+  gap: 3px;
+}
+
+.rulerCell {
+  flex-shrink: 0;
+  text-align: center;
+  font-size: 9px;
+  color: var(--text-muted);
+  letter-spacing: 0.05em;
+  font-weight: 700;
+  height: 12px;
+  line-height: 12px;
+  transition: color 0.1s;
+}
+
+.rulerCell.groupStart {
+  margin-left: 6px;
+}
+
+.rulerCell.rulerActive {
+  color: var(--amber);
+}
+
+/* ── Tracks — vertical scroll for banks with many files ──────────────────── */
+.tracks {
+  display: flex;
+  flex-direction: column;
+  min-width: max-content;
+  max-height: 340px;        /* ~7 tracks visible; scroll beyond */
+  overflow-y: auto;
+  overflow-x: visible;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(197, 160, 89, 0.2) transparent;
+}
+
+.tracks::-webkit-scrollbar { width: 4px; }
+.tracks::-webkit-scrollbar-track { background: transparent; }
+.tracks::-webkit-scrollbar-thumb {
+  background: rgba(197, 160, 89, 0.2);
+  border-radius: 2px;
+}

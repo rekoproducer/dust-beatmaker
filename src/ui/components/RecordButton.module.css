@@ -1,0 +1,103 @@
+.wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+}
+
+.btn {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 14px;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(255, 60, 60, 0.4);
+  background: transparent;
+  color: rgba(255, 80, 80, 0.7);
+  cursor: pointer;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.btn:hover {
+  border-color: rgba(255, 60, 60, 0.8);
+  color: rgb(255, 80, 80);
+  background: rgba(255, 60, 60, 0.08);
+}
+
+/* ── Recording state ──────────────────────────────────────────────────────── */
+.btn.recording {
+  border-color: rgb(220, 40, 40);
+  color: rgb(255, 80, 80);
+  background: rgba(220, 40, 40, 0.12);
+  animation: rec-pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes rec-pulse {
+  0%, 100% { box-shadow: 0 0 6px rgba(220, 40, 40, 0.3); }
+  50%       { box-shadow: 0 0 18px rgba(220, 40, 40, 0.7); }
+}
+
+/* Record indicator dot */
+.dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: rgb(220, 40, 40);
+  flex-shrink: 0;
+  transition: box-shadow 0.2s;
+}
+
+.btn.recording .dot {
+  box-shadow: 0 0 6px rgb(220, 40, 40);
+  animation: dot-blink 1.4s ease-in-out infinite;
+}
+
+@keyframes dot-blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.3; }
+}
+
+/* Timer is now inline in .label — font-variant for aligned digits */
+.label {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.06em;
+}
+
+/* ── Toast ────────────────────────────────────────────────────────────────── */
+.toast {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  white-space: nowrap;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  padding: 5px 10px;
+  border-radius: 4px;
+  pointer-events: none;
+  animation: toast-in 0.2s ease both;
+  z-index: 9000;
+}
+
+.toastOk {
+  background: rgba(197, 160, 89, 0.15);
+  border: 1px solid rgba(197, 160, 89, 0.35);
+  color: var(--gold);
+}
+
+.toastWarn {
+  background: rgba(232, 131, 42, 0.12);
+  border: 1px solid rgba(232, 131, 42, 0.3);
+  color: var(--amber);
+}
+
+@keyframes toast-in {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}

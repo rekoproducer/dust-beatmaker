@@ -1,0 +1,258 @@
+.app {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Ambient orbs — color driven by active stem bank via CSS custom props */
+.orb1 {
+  position: fixed;
+  top: -200px;
+  left: -200px;
+  width: 600px;
+  height: 600px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--bank-glow1, rgba(197, 160, 89, 0.07)) 0%, transparent 70%);
+  pointer-events: none;
+  animation: drift1 12s ease-in-out infinite alternate;
+  transition: background 1.2s ease;
+}
+
+.orb2 {
+  position: fixed;
+  bottom: -200px;
+  right: -200px;
+  width: 500px;
+  height: 500px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--bank-glow2, rgba(232, 131, 42, 0.055)) 0%, transparent 70%);
+  pointer-events: none;
+  animation: drift2 15s ease-in-out infinite alternate;
+  transition: background 1.2s ease;
+}
+
+/* ── Container ─────────────────────────────────────────────────────────────── */
+.container {
+  width: 100%;
+  max-width: 960px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  animation: slide-in 0.5s ease both;
+}
+
+/* ── Header ─────────────────────────────────────────────────────────────────── */
+.header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding-bottom: 4px;
+}
+
+.titleBlock {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.title {
+  font-family: 'Orbitron', monospace;
+  font-size: 28px;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  line-height: 1;
+  /* Warm gold gradient instead of cyan */
+  background: linear-gradient(135deg, #EDE0C8 0%, #C5A059 60%, #E8832A 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.subtitle {
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.status {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.liveIndicator {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  color: var(--bank-accent, var(--amber));
+  font-weight: 700;
+}
+
+.liveDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--bank-accent, var(--amber));
+  box-shadow: 0 0 8px var(--bank-accent, var(--amber));
+  animation: blink-cursor 1s ease-in-out infinite;
+}
+
+.loadingIndicator {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  color: var(--text-muted);
+  font-weight: 700;
+}
+
+.loadingDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  border: 1.5px solid var(--text-muted);
+  border-top-color: var(--gold);
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.stepCounter {
+  font-family: 'Orbitron', monospace;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  color: var(--text-dim);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Control bars ─────────────────────────────────────────────────────────── */
+.controlBar {
+  border-radius: var(--radius-lg);
+  padding: 16px 24px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.controlBar2 {
+  border-radius: var(--radius-lg);
+  padding: 14px 24px;
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+
+/* GRID block — left third */
+.panelBlock {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex: 1;
+}
+
+/* TIMING block — middle third */
+.timingBlock {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: flex-start;
+  padding: 0 24px;
+}
+
+.timingBlockLabel {
+  font-size: 9px;
+  letter-spacing: 0.25em;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+/* The two sliders sit on the same horizontal baseline */
+.timingSliders {
+  display: flex;
+  align-items: flex-start;   /* top-align so labels + sliders line up */
+  gap: 20px;
+  width: 100%;
+}
+
+/* Thin vertical rule between the two sliders */
+.innerDivider {
+  width: 1px;
+  height: 52px;
+  background: var(--border);
+  flex-shrink: 0;
+  opacity: 0.4;
+  align-self: center;
+}
+
+.divider {
+  width: 1px;
+  height: 40px;
+  background: var(--border);
+  flex-shrink: 0;
+}
+
+/* ── Grid Panel ─────────────────────────────────────────────────────────────── */
+.gridPanel {
+  border-radius: var(--radius-lg);
+  padding: 20px 24px;
+}
+
+/* ── Info button (header) ────────────────────────────────────────────────────── */
+.infoBtn {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 1px solid rgba(197, 160, 89, 0.3);
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+  flex-shrink: 0;
+}
+
+.infoBtn:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+  background: var(--gold-dim);
+}
+
+/* ── Footer ─────────────────────────────────────────────────────────────────── */
+.footer {
+  text-align: center;
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  color: var(--text-muted);
+  padding-top: 4px;
+}
+
+.footerHelp {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-color: rgba(197, 160, 89, 0.3);
+  font-family: inherit;
+  padding: 0;
+  transition: color 0.15s;
+}
+
+.footerHelp:hover { color: var(--gold); }

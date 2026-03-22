@@ -1,0 +1,152 @@
+.root {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+/* ── Play Button ──────────────────────────────────────────────────────────── */
+.playBtn {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: 2px solid var(--gold);
+  background: transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  box-shadow: 0 0 0 0 var(--gold);
+}
+
+.playBtn:hover {
+  background: var(--gold-dim);
+  box-shadow: var(--gold-glow);
+}
+
+.playBtn.playing {
+  border-color: var(--amber);
+  animation: pulse-amber 1.2s ease-in-out infinite;
+}
+
+.playBtn.playing:hover {
+  background: var(--amber-dim);
+}
+
+.playIcon {
+  width: 0;
+  height: 0;
+  border-top: 9px solid transparent;
+  border-bottom: 9px solid transparent;
+  border-left: 15px solid var(--gold);
+  margin-left: 3px;
+}
+
+.stopIcon {
+  width: 14px;
+  height: 14px;
+  background: var(--amber);
+  border-radius: 2px;
+}
+
+/* ── BPM ──────────────────────────────────────────────────────────────────── */
+.bpmWrap {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  position: relative;
+}
+
+.bpmLabel {
+  font-size: 9px;
+  letter-spacing: 0.25em;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.bpmInput {
+  font-family: 'Orbitron', monospace;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--gold);
+  background: transparent;
+  border: none;
+  outline: none;
+  width: 68px;
+  line-height: 1;
+  -moz-appearance: textfield;
+}
+
+.bpmInput::-webkit-inner-spin-button,
+.bpmInput::-webkit-outer-spin-button { -webkit-appearance: none; }
+
+.bpmNudge {
+  position: absolute;
+  right: -20px;
+  top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.bpmNudge button {
+  background: transparent;
+  border: none;
+  color: var(--text-dim);
+  cursor: pointer;
+  font-size: 8px;
+  line-height: 1;
+  padding: 1px 2px;
+  transition: color 0.1s;
+}
+
+.bpmNudge button:hover { color: var(--gold); }
+
+/* ── Slider ───────────────────────────────────────────────────────────────── */
+.bpmSlider {
+  flex: 1;
+  min-width: 80px;
+  max-width: 200px;
+  -webkit-appearance: none;
+  height: 2px;
+  background: var(--border);
+  border-radius: 1px;
+  outline: none;
+  cursor: pointer;
+}
+
+.bpmSlider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--gold);
+  box-shadow: 0 0 8px rgba(197, 160, 89, 0.6);
+  cursor: pointer;
+  transition: transform 0.1s;
+}
+
+.bpmSlider::-webkit-slider-thumb:hover { transform: scale(1.3); }
+
+/* ── Clear ────────────────────────────────────────────────────────────────── */
+.clearBtn {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  padding: 8px 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text-dim);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.clearBtn:hover {
+  border-color: var(--amber);
+  color: var(--amber);
+  box-shadow: 0 0 8px rgba(232, 131, 42, 0.25);
+}

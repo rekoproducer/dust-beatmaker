@@ -1,0 +1,116 @@
+/* ── Physical Drum Pad ───────────────────────────────────────────────────────── */
+.btn {
+  width: var(--step-size);
+  height: 32px;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(197, 160, 89, 0.1);
+  background: var(--pad-bg);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: box-shadow 0.07s ease, background 0.07s ease, transform 0.07s ease;
+
+  /* 3D raised effect */
+  box-shadow:
+    inset 0 1px 0 var(--pad-top),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.5),
+    0 2px 4px var(--pad-shadow),
+    0 1px 2px rgba(0, 0, 0, 0.4);
+}
+
+/* Subtle top-shine streak */
+.btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 40%;
+  background: linear-gradient(180deg, rgba(255, 248, 235, 0.06) 0%, transparent 100%);
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+  pointer-events: none;
+}
+
+.btn:hover {
+  border-color: rgba(197, 160, 89, 0.3);
+  background: #221c12;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 248, 235, 0.1),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.5),
+    0 2px 6px var(--pad-shadow),
+    0 0 8px rgba(197, 160, 89, 0.12);
+}
+
+/* Group separator (every 4 steps) */
+.groupStart {
+  margin-left: 6px;
+}
+
+/* Small (32n) — simplified 3D, no dot */
+.btn.small::before { display: none; }
+.btn.small.active::after { display: none; }
+
+/* Tiny (64n) — flat, no effects, max density */
+.btn.tiny {
+  border-radius: 2px;
+  box-shadow: none;
+}
+.btn.tiny::before { display: none; }
+.btn.tiny.active::after { display: none; }
+.btn.tiny:hover {
+  box-shadow: none;
+}
+
+/* ── Active step ─────────────────────────────────────────────────────────────── */
+.btn.active {
+  background: linear-gradient(
+    160deg,
+    rgba(197, 160, 89, calc(0.25 + var(--vel, 0.8) * 0.35)) 0%,
+    rgba(168, 110, 30, calc(0.2 + var(--vel, 0.8) * 0.25)) 100%
+  );
+  border-color: rgba(197, 160, 89, 0.55);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 220, 140, 0.2),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.6),
+    0 0 6px rgba(197, 160, 89, calc(var(--vel, 0.8) * 0.5)),
+    0 0 18px rgba(197, 160, 89, calc(var(--vel, 0.8) * 0.25));
+}
+
+/* Velocity dot */
+.btn.active::after {
+  content: '';
+  position: absolute;
+  top: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: var(--gold-bright);
+  box-shadow: 0 0 4px var(--gold);
+  pointer-events: none;
+}
+
+/* ── Current playhead step ───────────────────────────────────────────────────── */
+.btn.current {
+  border-color: rgba(232, 131, 42, 0.7) !important;
+
+  /* Pressed-in appearance — playhead "pushes" the pad */
+  box-shadow:
+    inset 0 2px 5px rgba(0, 0, 0, 0.7),
+    inset 0 1px 2px rgba(0, 0, 0, 0.5),
+    0 0 10px rgba(232, 131, 42, 0.5) !important;
+  transform: translateY(1px);
+}
+
+.btn.current.active {
+  background: linear-gradient(
+    160deg,
+    rgba(232, 131, 42, 0.4) 0%,
+    rgba(197, 160, 89, 0.3) 100%
+  );
+}
+
+.btn.current:not(.active) {
+  background: rgba(232, 131, 42, 0.08);
+}
