@@ -64,9 +64,7 @@ vi.mock('tone', () => {
 })
 
 import { createInitialState } from '../../sequencer/sequencer'
-import { TRACK_STEM_MAP } from '../../sequencer/types'
 import { TRACK_NOTE } from '../../engine/synths'
-import type { TrackId } from '../../sequencer/types'
 
 describe('Dynamic loading model', () => {
   it('TRACK_NOTE contains standard drum keys', () => {

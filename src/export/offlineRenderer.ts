@@ -45,7 +45,8 @@ async function fetchTextureBuffer(): Promise<AudioBuffer | null> {
 export async function renderLoop(
   state: SequencerState,
   options: RenderOptions = {}
-): Promise<AudioBuffer> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+): Promise<any> {
   const { dustFx = false, withTexture = dustFx } = options
 
   const stepDur     = stepDurationSec(state.bpm, state.resolution)
@@ -69,7 +70,7 @@ export async function renderLoop(
     }
 
     // ── Drum voices ──────────────────────────────────────────────────────────
-    const voices = createVoices(state.machine)
+    const voices = createVoices(state.bank ?? '808')
     Object.values(voices).forEach((v) => v.connect(outputNode))
 
     transport.bpm.value = state.bpm
@@ -90,13 +91,12 @@ export async function renderLoop(
     // ── Vinyl texture (looped, at -30dB) ─────────────────────────────────────
     if (textureBuffer) {
       const textureVol = new Tone.Volume(-30).connect(outputNode)
-      // Manually loop by scheduling multiple iterations across the render duration
-      const textureDur = textureBuffer.duration
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const toneBuffer  = Tone.ToneAudioBuffer.fromArray(textureBuffer.getChannelData(0)) as any
+      const textureDur  = textureBuffer.duration
       let t = 0
       while (t < totalDuration) {
-        const src = new Tone.ToneBufferSource(
-          new Tone.ToneAudioBuffer(textureBuffer)
-        ).connect(textureVol)
+        const src = new Tone.ToneBufferSource(toneBuffer).connect(textureVol)
         src.start(t)
         t += textureDur
       }

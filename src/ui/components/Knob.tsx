@@ -11,8 +11,7 @@ const SIZE    = 48
 const CX      = SIZE / 2
 const CY      = SIZE / 2
 const R       = 18
-const START_A = -225  // degrees (bottom-left)
-const END_A   = 45    // degrees (bottom-right)  → 270° sweep
+const START_A = -225  // degrees (bottom-left) → 270° sweep to bottom-right
 
 function polarXY(angleDeg: number, r: number) {
   const rad = (angleDeg * Math.PI) / 180
@@ -30,8 +29,6 @@ function describeArc(startDeg: number, endDeg: number, r: number) {
 export function Knob({ value, label, onChange }: Props) {
   const dragRef = useRef<{ startY: number; startVal: number } | null>(null)
 
-  const currentAngle = START_A + (value / 100) * (END_A - START_A + 360 - 360 + 270)
-  // Actually: 270° total sweep
   const valueDeg = START_A + (value / 100) * 270
 
   const pointer = polarXY(valueDeg, R * 0.55)

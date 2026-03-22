@@ -1,15 +1,15 @@
-import type { DrumMachine } from '../../sequencer/types'
+// Legacy component — kept for reference, replaced by BankSelector
 import styles from './MachineSelector.module.css'
 
 interface Props {
-  current: DrumMachine
-  onChange: (m: DrumMachine) => void
+  current: string
+  onChange: (m: string) => void
 }
 
-const MACHINES: { id: DrumMachine; label: string; color: string }[] = [
-  { id: '707', label: 'TR-707', color: '#A8896A' },  // warm sand
-  { id: '808', label: 'TR-808', color: '#C5A059' },  // dusty gold
-  { id: '909', label: 'TR-909', color: '#E8832A' },  // deep amber
+const MACHINES: { id: string; label: string; color: string }[] = [
+  { id: '707', label: 'TR-707', color: '#A8896A' },
+  { id: '808', label: 'TR-808', color: '#C5A059' },
+  { id: '909', label: 'TR-909', color: '#E8832A' },
 ]
 
 export function MachineSelector({ current, onChange }: Props) {

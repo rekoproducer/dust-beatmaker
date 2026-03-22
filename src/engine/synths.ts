@@ -1,11 +1,10 @@
-import * as Tone from 'tone'
-import type { DrumMachine, TrackId } from '../sequencer/types'
-
 /**
- * Simple round-robin voice pool for NoiseSynth / MetalSynth.
- * Prevents note cut-off at fast resolutions (1/32, 1/64) by
- * distributing rapid hits across independent synth instances.
+ * Legacy synthesis engine — used only by offlineRenderer.ts for WAV/MP3 export.
+ * Live playback now uses Tone.Sampler via stemLoader.ts.
  */
+import * as Tone from 'tone'
+import type { TrackId } from '../sequencer/types'
+
 class VoicePool<T extends Tone.NoiseSynth | Tone.MetalSynth> {
   private voices: T[]
   private idx = 0
@@ -30,151 +29,87 @@ class VoicePool<T extends Tone.NoiseSynth | Tone.MetalSynth> {
   }
 }
 
-// ── Public voice shape ───────────────────────────────────────────────────────
 export interface MachineVoices {
-  kick:         Tone.PolySynth
+  kick:         Tone.PolySynth<Tone.MembraneSynth>
   snare:        VoicePool<Tone.NoiseSynth>
   hihat_closed: VoicePool<Tone.MetalSynth>
   hihat_open:   VoicePool<Tone.MetalSynth>
   clap:         VoicePool<Tone.NoiseSynth>
-  tom_low:      Tone.PolySynth
-  tom_mid:      Tone.PolySynth
-  tom_high:     Tone.PolySynth
+  tom_low:      Tone.PolySynth<Tone.MembraneSynth>
+  tom_mid:      Tone.PolySynth<Tone.MembraneSynth>
+  tom_high:     Tone.PolySynth<Tone.MembraneSynth>
 }
 
-// ── Helpers ──────────────────────────────────────────────────────────────────
-function membranePoly(opts: Tone.MembraneSynthOptions): Tone.PolySynth {
-  return new Tone.PolySynth(Tone.MembraneSynth, { maxPolyphony: 8, ...opts })
+function membranePoly(pitchDecay: number, octaves: number, decay: number): Tone.PolySynth<Tone.MembraneSynth> {
+  const poly = new Tone.PolySynth(Tone.MembraneSynth)
+  poly.set({ pitchDecay, octaves, envelope: { attack: 0.001, decay, sustain: 0, release: decay * 0.5 } })
+  return poly
 }
 
-// ── 808 ─────────────────────────────────────────────────────────────────────
+function metalPool(freq: number, harmonicity: number, modIdx: number, resonance: number, decay: number, size: number): VoicePool<Tone.MetalSynth> {
+  return new VoicePool(() => {
+    const s = new Tone.MetalSynth({ harmonicity, modulationIndex: modIdx, resonance, octaves: 1.5 })
+    s.frequency.value = freq
+    s.envelope.decay   = decay
+    s.envelope.release = decay * 0.2
+    return s
+  }, size)
+}
+
+function noisePool(type: 'white' | 'pink' | 'brown', attack: number, decay: number, size: number): VoicePool<Tone.NoiseSynth> {
+  return new VoicePool(() => new Tone.NoiseSynth({
+    noise: { type },
+    envelope: { attack, decay, sustain: 0, release: decay * 0.5 },
+  }), size)
+}
+
 function make808(): MachineVoices {
   return {
-    kick: membranePoly({
-      pitchDecay: 0.08, octaves: 8,
-      envelope: { attack: 0.001, decay: 0.4, sustain: 0, release: 0.2 },
-    }),
-    snare: new VoicePool(() => new Tone.NoiseSynth({
-      noise: { type: 'white' },
-      envelope: { attack: 0.001, decay: 0.22, sustain: 0, release: 0.1 },
-    }), 4),
-    hihat_closed: new VoicePool(() => new Tone.MetalSynth({
-      frequency: 400, harmonicity: 5.1, modulationIndex: 32,
-      resonance: 4000, octaves: 1.5,
-      envelope: { attack: 0.001, decay: 0.06, release: 0.01 },
-    }), 4),
-    hihat_open: new VoicePool(() => new Tone.MetalSynth({
-      frequency: 400, harmonicity: 5.1, modulationIndex: 32,
-      resonance: 4000, octaves: 1.5,
-      envelope: { attack: 0.001, decay: 0.4, release: 0.1 },
-    }), 2),
-    clap: new VoicePool(() => new Tone.NoiseSynth({
-      noise: { type: 'pink' },
-      envelope: { attack: 0.005, decay: 0.1, sustain: 0, release: 0.05 },
-    }), 4),
-    tom_low: membranePoly({
-      pitchDecay: 0.06, octaves: 4,
-      envelope: { attack: 0.001, decay: 0.3, sustain: 0, release: 0.1 },
-    }),
-    tom_mid: membranePoly({
-      pitchDecay: 0.05, octaves: 3,
-      envelope: { attack: 0.001, decay: 0.25, sustain: 0, release: 0.1 },
-    }),
-    tom_high: membranePoly({
-      pitchDecay: 0.04, octaves: 2.5,
-      envelope: { attack: 0.001, decay: 0.2, sustain: 0, release: 0.08 },
-    }),
+    kick:         membranePoly(0.08, 8, 0.4),
+    snare:        noisePool('white', 0.001, 0.22, 4),
+    hihat_closed: metalPool(400, 5.1, 32, 4000, 0.06, 4),
+    hihat_open:   metalPool(400, 5.1, 32, 4000, 0.4,  2),
+    clap:         noisePool('pink',  0.005, 0.1, 4),
+    tom_low:      membranePoly(0.06, 4,   0.3),
+    tom_mid:      membranePoly(0.05, 3,   0.25),
+    tom_high:     membranePoly(0.04, 2.5, 0.2),
   }
 }
 
-// ── 909 ─────────────────────────────────────────────────────────────────────
 function make909(): MachineVoices {
   return {
-    kick: membranePoly({
-      pitchDecay: 0.05, octaves: 6,
-      envelope: { attack: 0.001, decay: 0.28, sustain: 0, release: 0.1 },
-    }),
-    snare: new VoicePool(() => new Tone.NoiseSynth({
-      noise: { type: 'white' },
-      envelope: { attack: 0.001, decay: 0.15, sustain: 0, release: 0.08 },
-    }), 4),
-    hihat_closed: new VoicePool(() => new Tone.MetalSynth({
-      frequency: 600, harmonicity: 5.1, modulationIndex: 40,
-      resonance: 5000, octaves: 1.5,
-      envelope: { attack: 0.001, decay: 0.04, release: 0.01 },
-    }), 4),
-    hihat_open: new VoicePool(() => new Tone.MetalSynth({
-      frequency: 600, harmonicity: 5.1, modulationIndex: 40,
-      resonance: 5000, octaves: 1.5,
-      envelope: { attack: 0.001, decay: 0.3, release: 0.08 },
-    }), 2),
-    clap: new VoicePool(() => new Tone.NoiseSynth({
-      noise: { type: 'white' },
-      envelope: { attack: 0.001, decay: 0.08, sustain: 0, release: 0.04 },
-    }), 4),
-    tom_low: membranePoly({
-      pitchDecay: 0.05, octaves: 3.5,
-      envelope: { attack: 0.001, decay: 0.22, sustain: 0, release: 0.08 },
-    }),
-    tom_mid: membranePoly({
-      pitchDecay: 0.04, octaves: 3,
-      envelope: { attack: 0.001, decay: 0.18, sustain: 0, release: 0.07 },
-    }),
-    tom_high: membranePoly({
-      pitchDecay: 0.035, octaves: 2.5,
-      envelope: { attack: 0.001, decay: 0.14, sustain: 0, release: 0.06 },
-    }),
+    kick:         membranePoly(0.05, 6, 0.28),
+    snare:        noisePool('white', 0.001, 0.15, 4),
+    hihat_closed: metalPool(600, 5.1, 40, 5000, 0.04, 4),
+    hihat_open:   metalPool(600, 5.1, 40, 5000, 0.3,  2),
+    clap:         noisePool('white', 0.001, 0.08, 4),
+    tom_low:      membranePoly(0.05, 3.5, 0.22),
+    tom_mid:      membranePoly(0.04, 3,   0.18),
+    tom_high:     membranePoly(0.035, 2.5, 0.14),
   }
 }
 
-// ── 707 ─────────────────────────────────────────────────────────────────────
 function make707(): MachineVoices {
   return {
-    kick: membranePoly({
-      pitchDecay: 0.03, octaves: 4,
-      envelope: { attack: 0.001, decay: 0.18, sustain: 0, release: 0.08 },
-    }),
-    snare: new VoicePool(() => new Tone.NoiseSynth({
-      noise: { type: 'brown' },
-      envelope: { attack: 0.001, decay: 0.18, sustain: 0, release: 0.1 },
-    }), 4),
-    hihat_closed: new VoicePool(() => new Tone.MetalSynth({
-      frequency: 800, harmonicity: 5.1, modulationIndex: 24,
-      resonance: 6000, octaves: 1.5,
-      envelope: { attack: 0.001, decay: 0.03, release: 0.01 },
-    }), 4),
-    hihat_open: new VoicePool(() => new Tone.MetalSynth({
-      frequency: 800, harmonicity: 5.1, modulationIndex: 24,
-      resonance: 6000, octaves: 1.5,
-      envelope: { attack: 0.001, decay: 0.2, release: 0.06 },
-    }), 2),
-    clap: new VoicePool(() => new Tone.NoiseSynth({
-      noise: { type: 'pink' },
-      envelope: { attack: 0.001, decay: 0.12, sustain: 0, release: 0.06 },
-    }), 4),
-    tom_low: membranePoly({
-      pitchDecay: 0.04, octaves: 3,
-      envelope: { attack: 0.001, decay: 0.2, sustain: 0, release: 0.08 },
-    }),
-    tom_mid: membranePoly({
-      pitchDecay: 0.035, octaves: 2.5,
-      envelope: { attack: 0.001, decay: 0.16, sustain: 0, release: 0.07 },
-    }),
-    tom_high: membranePoly({
-      pitchDecay: 0.03, octaves: 2,
-      envelope: { attack: 0.001, decay: 0.12, sustain: 0, release: 0.06 },
-    }),
+    kick:         membranePoly(0.03, 4, 0.18),
+    snare:        noisePool('brown', 0.001, 0.18, 4),
+    hihat_closed: metalPool(800, 5.1, 24, 6000, 0.03, 4),
+    hihat_open:   metalPool(800, 5.1, 24, 6000, 0.2,  2),
+    clap:         noisePool('pink', 0.001, 0.12, 4),
+    tom_low:      membranePoly(0.04, 3,   0.2),
+    tom_mid:      membranePoly(0.035, 2.5, 0.16),
+    tom_high:     membranePoly(0.03, 2,   0.12),
   }
 }
 
-// ── Note mapping ─────────────────────────────────────────────────────────────
-export const TRACK_NOTE: Record<TrackId, string | number> = {
+export const TRACK_NOTE: Record<string, string | number> = {
   kick: 'C1', snare: 'C2', hihat_closed: 'C3', hihat_open: 'C3',
   clap: 'C3', tom_low: 'F2', tom_mid: 'A2', tom_high: 'C3',
   rim: 'C4', cowbell: 'G3',
 }
 
-export function createVoices(machine: DrumMachine): MachineVoices {
+/** machine parameter accepts any string — maps to 707/808/909, defaults to 808 */
+export function createVoices(machine: string): MachineVoices {
   switch (machine) {
     case '707': return make707()
     case '909': return make909()
@@ -186,9 +121,6 @@ export function disposeVoices(voices: MachineVoices): void {
   Object.values(voices).forEach((v) => v.dispose())
 }
 
-/**
- * Trigger a voice — handles PolySynth, VoicePool<NoiseSynth>, VoicePool<MetalSynth>
- */
 export function triggerVoice(
   voice: MachineVoices[keyof MachineVoices],
   trackId: TrackId,
@@ -196,7 +128,7 @@ export function triggerVoice(
   time: number,
   velocity: number
 ): void {
-  const note = TRACK_NOTE[trackId]
+  const note = TRACK_NOTE[trackId] ?? 'C3'
   if (voice instanceof Tone.PolySynth) {
     voice.triggerAttackRelease(note as string, noteLen, time, velocity)
   } else if (voice instanceof VoicePool) {

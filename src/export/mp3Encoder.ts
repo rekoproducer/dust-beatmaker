@@ -42,5 +42,5 @@ export function encodeMp3(buffer: AudioBuffer, kbps: 128 | 192 | 256 | 320 = 192
   const tail = mp3Encoder.flush()
   if (tail.length > 0) mp3Data.push(tail)
 
-  return new Blob(mp3Data, { type: 'audio/mp3' })
+  return new Blob(mp3Data as BlobPart[], { type: 'audio/mp3' })
 }
