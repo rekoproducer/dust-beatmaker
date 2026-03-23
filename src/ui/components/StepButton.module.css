@@ -3,7 +3,7 @@
   width: var(--step-size);
   height: 32px;
   border-radius: var(--radius-sm);
-  border: 1px solid rgba(197, 160, 89, 0.1);
+  border: 1px solid rgba(197, 160, 89, 0.30);
   background: var(--pad-bg);
   cursor: pointer;
   position: relative;

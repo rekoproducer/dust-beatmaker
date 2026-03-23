@@ -3,7 +3,7 @@
 /* ── DUST Theme — Design Tokens ─────────────────────────────────────────────── */
 :root {
   /* Background */
-  --bg:           #0c0a07;
+  --bg:           #090806;
   --bg-glass:     rgba(255, 248, 235, 0.03);
   --bg-glass-2:   rgba(255, 248, 235, 0.055);
   --border:       rgba(197, 160, 89, 0.12);
@@ -25,12 +25,12 @@
   --sand-dim:     rgba(168, 137, 106, 0.15);
 
   /* Text */
-  --text:         #EDE0C8;
-  --text-dim:     rgba(237, 224, 200, 0.45);
-  --text-muted:   rgba(237, 224, 200, 0.18);
+  --text:         #F0E4CC;
+  --text-dim:     rgba(240, 228, 204, 0.60);
+  --text-muted:   rgba(240, 228, 204, 0.28);
 
   /* Pad / Button 3D */
-  --pad-bg:       #1a1510;
+  --pad-bg:       #252010;
   --pad-top:      rgba(255, 248, 235, 0.07);
   --pad-shadow:   rgba(0, 0, 0, 0.7);
 
