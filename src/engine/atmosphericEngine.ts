@@ -99,9 +99,11 @@ export class AtmosphericEngine {
     this.dustHPF.disconnect()
     if (active) {
       this.dustHPF.connect(this.bitCrusher)
+      void this.startTexture()
       console.log('[atmosphere] DUST FX ON')
     } else {
       this.dustHPF.connect(this.masterOut)
+      this.stopTexture()
       console.log('[atmosphere] DUST FX OFF')
     }
   }

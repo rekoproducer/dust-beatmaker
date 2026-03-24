@@ -115,9 +115,6 @@ export class AudioEngine {
     await Tone.start()
     Tone.getContext().lookAhead = 0.1
 
-    // Start vinyl texture on first user gesture
-    await this.atmosphere.startTexture()
-
     if (Object.keys(this.samplers).length === 0) {
       await this.loadBank()
     } else {
