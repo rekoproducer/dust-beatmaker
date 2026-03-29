@@ -115,7 +115,8 @@ export class BassEngine {
   // ── Sound controls ────────────────────────────────────────────────────────
 
   setOscType(type: OscType): void {
-    (this.synth.oscillator as Tone.OmniOscillator<Tone.ToneOscillatorType>).type = type
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    ;(this.synth.oscillator as any).type = type
   }
 
   setGrit(pct: number): void {
