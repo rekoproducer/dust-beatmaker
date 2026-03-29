@@ -4,7 +4,7 @@
   align-items: center;
   justify-content: flex-start;
   flex-direction: column;
-  padding: 24px 16px 110px; /* bottom padding = height of two toggle bars */
+  padding: 24px 16px 40px;
   position: relative;
   overflow-x: hidden;
 }

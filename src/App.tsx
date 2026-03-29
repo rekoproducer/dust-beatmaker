@@ -203,13 +203,7 @@ export default function App() {
           />
         </div>
 
-        <footer className={styles.footer}>
-          <span>CLICK to toggle · DRAG to paint · SHIFT to stutter · <button className={styles.footerHelp} onClick={() => setShowInfo(true)}>?&nbsp;shortcuts</button></span>
-        </footer>
-      </div>
-
-      {/* ── Fixed bottom panels — expand upward, never push content ── */}
-      <div className={styles.bottomPanels}>
+        {/* Bass Punisher — part of normal page flow, expands downward */}
         <BassPanel
           bassState={bassState}
           isArmed={isArmed}
@@ -229,6 +223,10 @@ export default function App() {
           onSustain={setBassSustain}
           onRelease={setBassRelease}
         />
+
+        <footer className={styles.footer}>
+          <span>CLICK to toggle · DRAG to paint · SHIFT to stutter · <button className={styles.footerHelp} onClick={() => setShowInfo(true)}>?&nbsp;shortcuts</button></span>
+        </footer>
       </div>
 
       {showInfo && <InfoOverlay onClose={() => setShowInfo(false)} />}

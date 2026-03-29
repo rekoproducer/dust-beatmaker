@@ -3,17 +3,18 @@
 .wrapper {
   width: 100%;
   display: flex;
-  flex-direction: column-reverse; /* toggle bar at bottom, panel expands upward */
+  flex-direction: column;
 }
 
 /* ── Toggle bar ──────────────────────────────────────────────────────────── */
 .toggleBar {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 10px 20px;
-  background: var(--bg-glass);
-  border: 1px solid var(--border);
+  gap: 14px;
+  padding: 14px 20px;
+  background: rgba(232, 131, 42, 0.04);
+  border: 1px solid rgba(232, 131, 42, 0.2);
+  border-left: 3px solid rgba(232, 131, 42, 0.45);
   border-radius: var(--radius-lg);
   cursor: pointer;
   transition: border-color 0.2s, background 0.2s;
@@ -21,27 +22,29 @@
 }
 
 .toggleBar:hover {
-  border-color: rgba(232, 131, 42, 0.25);
-  background: var(--bg-glass-2);
+  background: rgba(232, 131, 42, 0.08);
+  border-color: rgba(232, 131, 42, 0.4);
+  border-left-color: var(--amber);
 }
 
 .toggleBar.open {
-  border-top-left-radius: 0;
-  border-top-right-radius: 0;
-  border-top-color: transparent;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  border-bottom-color: transparent;
 }
 
 .toggleLabel {
   font-family: 'Orbitron', monospace;
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.2em;
-  color: var(--text-muted);
+  color: var(--amber);
   transition: color 0.2s;
 }
 
 .toggleBar.armed .toggleLabel {
   color: var(--amber);
+  text-shadow: 0 0 12px rgba(232, 131, 42, 0.6);
 }
 
 .armDot {
@@ -107,12 +110,13 @@
 
 /* ── Expanded panel ───────────────────────────────────────────────────────── */
 .panel {
-  background: var(--bg-glass);
-  border: 1px solid var(--border);
-  border-bottom: none;
-  border-top-left-radius: var(--radius-lg);
-  border-top-right-radius: var(--radius-lg);
-  padding: 20px 24px 22px;
+  background: rgba(232, 131, 42, 0.03);
+  border: 1px solid rgba(232, 131, 42, 0.2);
+  border-left: 3px solid rgba(232, 131, 42, 0.45);
+  border-top: none;
+  border-bottom-left-radius: var(--radius-lg);
+  border-bottom-right-radius: var(--radius-lg);
+  padding: 20px 24px 24px;
   display: flex;
   flex-direction: column;
   gap: 16px;
