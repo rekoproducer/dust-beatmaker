@@ -1,8 +1,9 @@
-import { useMemo, useState, useEffect, useCallback } from 'react'
+import { useMemo, useState, useEffect, useCallback, useRef } from 'react'
 import { useSequencer } from './ui/hooks/useSequencer'
 import { useKeyboardShortcuts } from './ui/hooks/useKeyboardShortcuts'
 import { usePaintMode } from './ui/hooks/usePaintMode'
 import { useRecorder } from './ui/hooks/useRecorder'
+import { useBass } from './ui/hooks/useBass'
 import { RecordButton } from './ui/components/RecordButton'
 import { BankSelector } from './ui/components/BankSelector'
 import { Transport } from './ui/components/Transport'
@@ -13,6 +14,7 @@ import { SwingControl } from './ui/components/SwingControl'
 import { HumanizeControl } from './ui/components/HumanizeControl'
 import { DustFxButton } from './ui/components/DustFxButton'
 import { DustFilterPanel } from './ui/components/DustFilterPanel'
+import { BassPanel } from './ui/components/BassPanel'
 import { InfoOverlay } from './ui/components/InfoOverlay'
 import { STEM_BANKS } from './sequencer/types'
 import './ui/styles/globals.css'
@@ -21,12 +23,25 @@ import styles from './App.module.css'
 export default function App() {
   const {
     state, play, stop, switchBank,
+    connectBassToMaster,
     setFxActive, setHumanize, setLpf, setHpf,
     startStutter, stopStutter,
     toggleStep, setBpm, toggleMute, setVolume,
     clearTrack, clearAll, switchResolution, setSwing, preview,
     getRecordingStream,
   } = useSequencer('core-command')
+
+  const {
+    bassState, isArmed, octave, activeKey,
+    toggleArm, octaveDown, octaveUp,
+    rerouteOutput,
+    loadPreset: loadBassPreset,
+    setOscType, setGrit, setCutoff, setResonance, setVolume: setBassVolume,
+    setAttack: setBassAttack,
+    setDecay:  setBassDecay,
+    setSustain: setBassSustain,
+    setRelease: setBassRelease,
+  } = useBass()
 
   const { isRecording, elapsed, toast: recToast, start: startRec, stop: stopRec } = useRecorder(getRecordingStream)
 
@@ -53,8 +68,20 @@ export default function App() {
 
   useEffect(() => () => document.body.removeAttribute('data-dust-fx'), [])
 
+  // ── Bass → master bus routing ──────────────────────────────────────────────
+  // On first Play the AudioEngine is created and the recorder tap becomes live.
+  // We reroute BassEngine output into that tap so bass is captured in recordings.
+  const bassRoutedRef = useRef(false)
+  const handlePlay = useCallback(async () => {
+    await play()
+    if (!bassRoutedRef.current) {
+      bassRoutedRef.current = true
+      rerouteOutput(connectBassToMaster)
+    }
+  }, [play, rerouteOutput, connectBassToMaster])
+
   // ── Keyboard shortcuts ────────────────────────────────────────────────────
-  useKeyboardShortcuts({ isPlaying: state.isPlaying, play, stop, clearAll, switchBank, startStutter, stopStutter })
+  useKeyboardShortcuts({ isPlaying: state.isPlaying, play: handlePlay, stop, clearAll, switchBank, startStutter, stopStutter })
 
   // ── Drag-to-paint ─────────────────────────────────────────────────────────
   const getStepActive = useCallback(
@@ -113,7 +140,7 @@ export default function App() {
           <Transport
             isPlaying={state.isPlaying}
             bpm={state.bpm}
-            onPlay={play}
+            onPlay={handlePlay}
             onStop={stop}
             onBpmChange={setBpm}
             onClearAll={clearAll}
@@ -179,6 +206,29 @@ export default function App() {
         <footer className={styles.footer}>
           <span>CLICK to toggle · DRAG to paint · SHIFT to stutter · <button className={styles.footerHelp} onClick={() => setShowInfo(true)}>?&nbsp;shortcuts</button></span>
         </footer>
+      </div>
+
+      {/* ── Fixed bottom panels — expand upward, never push content ── */}
+      <div className={styles.bottomPanels}>
+        <BassPanel
+          bassState={bassState}
+          isArmed={isArmed}
+          octave={octave}
+          activeKey={activeKey}
+          onToggleArm={toggleArm}
+          onOctaveDown={octaveDown}
+          onOctaveUp={octaveUp}
+          onLoadPreset={loadBassPreset}
+          onOscType={setOscType}
+          onGrit={setGrit}
+          onCutoff={setCutoff}
+          onResonance={setResonance}
+          onVolume={setBassVolume}
+          onAttack={setBassAttack}
+          onDecay={setBassDecay}
+          onSustain={setBassSustain}
+          onRelease={setBassRelease}
+        />
       </div>
 
       {showInfo && <InfoOverlay onClose={() => setShowInfo(false)} />}

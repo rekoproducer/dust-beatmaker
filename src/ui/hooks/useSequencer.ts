@@ -110,6 +110,7 @@ export function useSequencer(initialBank: StemBank = 'core-command') {
     }
   }, [])
 
+  const connectBassToMaster = useCallback((node: import('tone').ToneAudioNode) => engineRef.current?.connectSource(node), [])
   const setFxActive         = useCallback((active: boolean) => engineRef.current?.setFxActive(active), [])
   const setHumanize         = useCallback((v: number) => engineRef.current?.setHumanize(v), [])
   const setLpf              = useCallback((v: number) => engineRef.current?.setLpf(v), [])
@@ -135,6 +136,7 @@ export function useSequencer(initialBank: StemBank = 'core-command') {
     play,
     stop,
     switchBank,
+    connectBassToMaster,
     setFxActive,
     setMasterVolume,
     setHumanize,

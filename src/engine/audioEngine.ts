@@ -57,6 +57,9 @@ export class AudioEngine {
   /** Live recording stream — taps masterOut after all filters/FX. */
   getRecordingStream(): MediaStream    { return this.atmosphere.getRecordingStream() }
 
+  /** Route any external source (e.g. BassEngine) into the recorder tap. */
+  connectSource(node: Tone.ToneAudioNode): void { this.atmosphere.connectSource(node) }
+
   /** Humanize: 0 = robotic grid, 100 = ±20ms random jitter per step */
   setHumanize(value: number): void {
     this.humanize = Math.max(0, Math.min(100, value))

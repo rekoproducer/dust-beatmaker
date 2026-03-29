@@ -2,10 +2,25 @@
   min-height: 100vh;
   display: flex;
   align-items: center;
-  justify-content: center;
-  padding: 24px 16px;
+  justify-content: flex-start;
+  flex-direction: column;
+  padding: 24px 16px 110px; /* bottom padding = height of two toggle bars */
   position: relative;
-  overflow: hidden;
+  overflow-x: hidden;
+}
+
+/* ── Fixed bottom panels — DAW-style, expand upward ──────────────────────── */
+.bottomPanels {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 960px;
+  max-width: calc(100vw - 32px);
+  z-index: 30;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
 }
 
 /* Ambient orbs — color driven by active stem bank via CSS custom props */

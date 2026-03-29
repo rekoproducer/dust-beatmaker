@@ -61,6 +61,13 @@ export class AtmosphericEngine {
     this.textureVol.connect(this.masterOut)
   }
 
+  // ── External source tap ────────────────────────────────────────────────────
+
+  /** Connect any external audio node into the master bus (captured by recorder). */
+  connectSource(node: Tone.ToneAudioNode): void {
+    node.connect(this.masterOut)
+  }
+
   // ── Recording ──────────────────────────────────────────────────────────────
 
   /** Returns a live MediaStream tapped from masterOut — captures all audio. */
